@@ -1,5 +1,6 @@
 # Vue Markdown Notebook
 
+![hero](./hero.png)
 ## Features
 
 - The notebook app will allow the user to write notes in markdown
