@@ -1,31 +1,57 @@
 <html>
 <head>
-  <title>Notebook</title>
-  <!-- Icons & Stylesheets -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+    <title>Notebook</title>
+    <!-- Icons & Stylesheets -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <!-- Include the library in the page -->
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
-  <script src="https://unpkg.com/marked"></script>
+<!-- Include the library in the page -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/marked"></script>
 
-  <!-- Notebook app -->
-  <div id="notebook">
+<!-- Notebook app -->
+<div id="notebook">
 
-    <!-- Main pane -->
-    <section class="main">
-      <textarea v-model="content"></textarea>
-    </section>
-
-    <!-- Preview pane -->
-    <aside class="preview" v-html="notePreview">
-      {{notePreview}}
+    <!-- Sidebar -->
+    <aside class="side-bar">
+        <!-- Here will be the note list-->
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <button @click="addNote" :title="notes.length + (notes.length === 1 ? ' note already' : ' notes already')">
+                <i class="material-icons">add</i> Add note
+            </button>
+            <div class="notes">
+                <!-- Note list here -->
+                <div class="note"
+                     v-for="note of notes"
+                     @click="selectNote(note)"
+                     :class="{selected: note === selectedNote}"
+                >{{note.title}}
+                </div>
+            </div>
+        </div>
     </aside>
 
-  </div>
+    <template v-if="selectedNote">
+        <!-- Main pane -->
+        <section class="main">
+            <div class="toolbar">
+                <!--- Text Toolbar -->
 
-  <!-- Some JavaScript -->
-  <script src="script.js"></script>
+            </div>
+            <textarea v-model="selectedNote.content"></textarea>
+        </section>
+
+        <!-- Preview pane -->
+        <aside class="preview" v-html="notePreview">
+            {{notePreview}}
+        </aside>
+    </template>
+
+</div>
+
+<!-- Some JavaScript -->
+<script src="script.js"></script>
 </body>
 </html>

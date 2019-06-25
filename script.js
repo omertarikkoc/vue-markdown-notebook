@@ -7,7 +7,8 @@ new Vue({
   // Some data
   data() {
     return  {
-      content: this.content = localStorage.getItem('content') || 'You can write in **markdown**!'
+      notes: JSON.parse(localStorage.getItem('notes')) || [],
+      selectedId: localStorage.getItem('selected-id') || null
     }
   },
 
@@ -15,21 +16,47 @@ new Vue({
   computed: {
     notePreview (){
       // Markdown rendered to HTML
-      return marked(this.content)
+      return this.selectedNote ? marked(this.selectedNote.content) : '';
+    },
+    selectedNote() {
+      return this.notes.find(note => note.id === this.selectedId)
     }
   },
 
   methods: {
-    saveNote () {
-      console.log('saving note', this.content);
-      localStorage.setItem('content', this.content)
+    addNote (){
+      const time = Date.now();
+      const note = {
+        id: String(time),
+        title: 'New note ' + (this.notes.length + 1),
+        content: `# Note ${this.notes.length + 1} \n**Hi !** This notebook is using markdown`,
+        created: time,
+        favorite: false,
+      };
+      // Add to the list
+      this.notes.push(note);
+    },
+    selectNote(note) {
+      console.log("Note selected: ", note.id);
+      this.selectedId = note.id;
+    },
+    saveNotes() {
+      // First stringify to JSON
+      localStorage.setItem('notes', JSON.stringify(this.notes));
+      console.log('Notes saved', new Date());
     }
+
   },
 
   watch: {
-    //Watching content data property
-    content: 'saveNote'
-  },
+    notes: {
+      handler: 'saveNotes',
+      deep: true,
+    },
+    selectedId (val) {
+      localStorage.setItem('selected-id', val);
+    }
+  }
 
 
 });
